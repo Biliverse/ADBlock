@@ -1,6 +1,7 @@
 import gRPC from "@nsnanocat/grpc";
 import { Console, fetch, Storage } from "@nsnanocat/util";
 import ADBlock from "../class/ADBlock.mjs";
+import { getAirborneDanmaku, takeAirborneRequest } from "../function/airborne.mjs";
 import database from "../function/database.mjs";
 import fixHeaders from "../function/fixHeaders.mjs";
 import setENV from "../function/setENV.mjs";
@@ -11,7 +12,7 @@ import { PlayViewReply } from "../protobuf/bilibili/app/playurl/v1/playurl.js";
 import { PlayerRelatesReply, TFInfoReply, ViewProgressReply, RelatesFeedReply as ViewRelatesFeedReply, ViewReply } from "../protobuf/bilibili/app/view/v1/view.js";
 import { ViewProgressReply as ViewUniteProgressReply } from "../protobuf/bilibili/app/viewunite/v1/viewprogress.js";
 import { RelatesFeedReply, ViewReply as ViewUniteReply } from "../protobuf/bilibili/app/viewunite/v1/viewunite.js";
-import { DmColorfulType, DmSegMobileReply, DmSegMobileReq, DmViewReply } from "../protobuf/bilibili/community/service/dm/v1/dm.js";
+import { DmColorfulType, DmSegMobileReply, DmViewReply } from "../protobuf/bilibili/community/service/dm/v1/dm.js";
 import { DetailListReply, MainListReply, ReplyInfoReply } from "../protobuf/bilibili/main/community/reply/v1/reply.js";
 import { SubjectDescriptionReply } from "../protobuf/bilibili/main/community/reply/v2/reply.js";
 import { PlayViewReply as PGCPlayViewReply } from "../protobuf/bilibili/pgc/gateway/player/v2/playurl.js";
@@ -128,7 +129,7 @@ export async function Response($request, $response, KV) {
 															default:
 																if (Array.isArray(item.banner_item)) {
 																	item.banner_item = item.banner_item.filter(i => {
-																		if (i.type === "ad") {
+																		if (i.type === "ad" || i.type === "ad_inline") {
 																			Console.info("✅ 推荐页大图广告去除");
 																			return false;
 																		}
@@ -139,7 +140,7 @@ export async function Response($request, $response, KV) {
 														}
 													} else if (["cm_v2", "cm_v1"].includes(cardType) && ["ad_web_s", "ad_av", "ad_web_gif"].includes(cardGoto)) {
 														// ad_player大视频广告 ad_web_gif大gif广告 ad_web_s普通小广告 ad_av创作推广广告 ad_inline_3d  上方大的视频3d广告 ad_inline_eggs 上方大的视频广告 ad_inline_live 华为问界
-														Console.log(`✅ ${cardGoto}广告去除`);
+														Console.info(`✅ ${cardGoto}广告去除`);
 														if (url.searchParams.get("device") !== "phone") {
 															return undefined; //pad直接去除
 														} else {
@@ -156,11 +157,11 @@ export async function Response($request, $response, KV) {
 																.filter(Boolean)
 																.includes(String(item?.args?.up_id))
 														) {
-															Console.log(`✅ 屏蔽Up主<${item?.args?.up_name}>直播推广`);
+															Console.info(`✅ 屏蔽Up主<${item?.args?.up_name}>直播推广`);
 															await fixPosition().then(result => (item = result)); //小广告补位
 														}
 													} else if (cardType === "cm_v2" && ["ad_player", "ad_inline_3d", "ad_inline_eggs", "ad_inline_live"].includes(cardGoto)) {
-														Console.log(`✅ ${cardGoto}广告去除`);
+														Console.info(`✅ ${cardGoto}广告去除`);
 														return undefined; //大广告直接去除
 													} else if (cardType === "small_cover_v10" && cardGoto === "game") {
 														Console.info("✅ 游戏广告去除");
@@ -186,7 +187,7 @@ export async function Response($request, $response, KV) {
 													}
 												}
 												if (adBlock.isFeedAd(item)) {
-													Console.info(`✅ 未枚举的推荐页广告去除: ${cardType ?? ""}/${cardGoto ?? ""}/${Goto ?? ""}`);
+													Console.info(`✅ 推荐页兜底规则触发：卡片类型：${cardType ?? ""}-卡片av：${cardGoto ?? ""}/${Goto ?? ""}`);
 													return undefined;
 												}
 												return item;
@@ -818,12 +819,18 @@ export async function Response($request, $response, KV) {
 											switch (Settings?.DM?.Airborne) {
 												case true: {
 													Console.warn("空降助手: 获取 Segment");
-													const { oid, pid, type } = DmSegMobileReq.fromBinary(gRPC.decode($request.body instanceof ArrayBuffer ? new Uint8Array($request.body) : ($request.body ?? new Uint8Array())));
-													if (type !== 1) break;
-													const videoId = toBvid(pid);
-													const segments = await fetchSponsorBlock(videoId, oid);
+													const requestBody = takeAirborneRequest($request);
+													if (!requestBody) {
+														Console.warn("空降助手: 未获取到 Segment 请求参数");
+														break;
+													}
+													const { oid, pid, type } = requestBody;
+													if (type !== 1) {
+														Console.warn(`空降助手: 不支持的弹幕类型 type=${type}，仅支持视频弹幕(type=1)`);
+														break;
+													}
 													// 构建响应体
-													body.elems.push(...createAirborneDanmaku(segments));
+													body.elems.push(...(await getAirborneDanmaku(pid, oid)));
 													Console.info("✅ 空降助手");
 													break;
 												}
@@ -988,24 +995,6 @@ export async function Response($request, $response, KV) {
 	return $response;
 }
 
-function toBvid(avid) {
-	const XOR_CODE = 23442827791579n;
-	const MAX_AID = 1n << 51n;
-	const BASE = 58n;
-	const data = "FcwAPNKTMug3GV5Lj7EJnHpWsx4tb8haYeviqBz6rkCy12mUSDQX9RdoZf";
-	const bytes = ["B", "V", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0"];
-	let bvIndex = bytes.length - 1;
-	let tmp = (MAX_AID | BigInt(avid)) ^ XOR_CODE;
-	while (tmp > 0) {
-		bytes[bvIndex] = data[Number(tmp % BASE)];
-		tmp /= BASE;
-		bvIndex -= 1;
-	}
-	[bytes[3], bytes[9]] = [bytes[9], bytes[3]];
-	[bytes[4], bytes[7]] = [bytes[7], bytes[4]];
-	return bytes.join("");
-}
-
 /*
  * Bilibili 多主机重试函数。
  * 当前流程没有调用，暂时整段注释保留，后续需要上游重试时可重新启用并补齐 ctx 来源。
@@ -1048,73 +1037,3 @@ async function fetchBilibili($request, maxRetries = 2) {
 	});
 }
 */
-
-async function fetchSponsorBlock(videoId, cid) {
-	try {
-		const { status, body } = await getSkipSegments(videoId, cid);
-
-		Console.debug("[SponsorBlock]");
-		Console.debug({ videoId, status, body });
-
-		if (status !== 200 || !body || body === "[]") {
-			return [];
-		}
-
-		return parseSegments(body);
-	} catch (e) {
-		Console.info("[SponsorBlock]");
-		Console.info(e);
-
-		return [];
-	}
-}
-
-function getSkipSegments(videoId, cid = "") {
-	cid = cid !== "0" ? cid : "";
-	return fetch(`https://bsbsb.top/api/skipSegments?videoID=${videoId}&cid=${cid}&category=sponsor`, {
-		headers: {
-			origin: "https://github.com/kokoryh/Sparkle/blob/master/release/surge/module/bilibili.sgmodule",
-			"x-ext-version": "1.0.0",
-		},
-		timeout: 3, // no more than 3 seconds
-	});
-}
-
-function parseSegments(body) {
-	return JSON.parse(body).reduce((memo, { actionType, segment }) => {
-		if (actionType === "skip" && segment[1] - segment[0] >= 8) {
-			memo.push(segment);
-		}
-		return memo;
-	}, []);
-}
-
-function createAirborneDanmaku(segments) {
-	const offset = 2000;
-	return segments.map((segment, index) => {
-		const id = String(index + 1);
-		const start = Math.floor(segment[0] * 1000) + offset;
-		const end = Math.floor(segment[1] * 1000);
-		return {
-			id,
-			progress: start,
-			mode: 5,
-			fontsize: 50,
-			color: 16777215,
-			midHash: "1948dd5d",
-			content: "空指部已就位",
-			ctime: "1735660800",
-			weight: 11,
-			action: `airborne:${end}`,
-			pool: 0,
-			idStr: id,
-			attr: 1310724,
-			animation: "",
-			// extra: "", // 当前精简 protobuf 未声明该字段，保留原值供协议补充时恢复。
-			colorful: DmColorfulType.NoneType,
-			type: 1,
-			oid: "212364987",
-			dmFrom: 1,
-		};
-	});
-}

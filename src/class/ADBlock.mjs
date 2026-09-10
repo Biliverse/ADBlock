@@ -124,7 +124,9 @@ export default class ADBlock {
 		if (!this.isObject(item)) return false;
 		const cardType = typeof item.card_type === "string" ? item.card_type : "";
 		const cardGoto = typeof item.card_goto === "string" ? item.card_goto : "";
-		return (Object.prototype.hasOwnProperty.call(item, "ad_info") && item.ad_info !== null) || cardType.startsWith("cm_") || cardGoto.startsWith("ad_") || item.goto === "ad" || item.is_ad === true;
+		return cardType.startsWith("cm_") || cardGoto.startsWith("ad_") || item.goto === "ad" || item.is_ad === true;
+		//修改此处兜底规则，包含ad_info的对象实测下来不完全是广告，故删除。
+		//return (Object.prototype.hasOwnProperty.call(item, "ad_info") && item.ad_info !== null) || cardType.startsWith("cm_") || cardGoto.startsWith("ad_") || item.goto === "ad" || item.is_ad === true;
 	}
 
 	isStoryAd(item) {

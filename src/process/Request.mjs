@@ -1,6 +1,7 @@
 import gRPC from "@nsnanocat/grpc";
 import { Console } from "@nsnanocat/util";
 import MD5 from "crypto-js/md5.js";
+import { cacheAirborneRequest } from "../function/airborne.mjs";
 import database from "../function/database.mjs";
 import fixHeaders from "../function/fixHeaders.mjs";
 import setENV from "../function/setENV.mjs";
@@ -105,6 +106,17 @@ export async function Request($request, KV) {
 				case "app.bilibili.com":
 				case "app.biliapi.com":
 					switch (url.pathname) {
+						case "/bilibili.community.service.dm.v1.DM/DmSegMobile":
+							switch (Settings?.DM?.Airborne) {
+								case true: {
+									cacheAirborneRequest($request);
+									break;
+								}
+								case false:
+								default:
+									break;
+							}
+							break;
 						case "/bilibili.app.interface.v1.Search/DefaultWords":
 							$response = {
 								status: 200,
