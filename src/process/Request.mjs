@@ -5,7 +5,6 @@ import { cacheAirborneRequest } from "../function/airborne.mjs";
 import database from "../function/database.mjs";
 import fixHeaders from "../function/fixHeaders.mjs";
 import setENV from "../function/setENV.mjs";
-import { settingsResponse } from "../function/settings.mjs";
 /***************** Processing *****************/
 export async function Request($request, KV) {
 	// 构造回复数据
@@ -28,8 +27,6 @@ export async function Request($request, KV) {
 	Console.info(`url: ${url.toJSON()}`);
 	Console.info(`PATHs: ${PATHs}`);
 	Console.info(`FORMAT: ${FORMAT}`);
-	$response = settingsResponse($request, Settings);
-	if ($response) return { $request, $response };
 	// 预留的通用响应结构，当前请求处理流程暂未使用。
 	// const body = { code: 0, message: "0", data: {} };
 	// 方法判断

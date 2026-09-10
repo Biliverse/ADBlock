@@ -61,45 +61,14 @@ jobs:
         uses: actions/download-artifact@v8
         with:
           name: artifact
-      - name: Deploy Request
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/request.dev.bundle.js
-      - name: Deploy Response
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/response.dev.bundle.js
-      - name: Deploy Surge Module
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/BiliBili.ADBlock.dev.sgmodule
-      - name: Deploy Loon Plugin
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/BiliBili.ADBlock.dev.plugin
-      - name: Deploy Quantumult X Snippet
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/BiliBili.ADBlock.dev.snippet
-      - name: Deploy Stash Override
-        uses: exuanbo/actions-deploy-gist@main
-        with:
-          token: ${{ secrets.GIST_TOKEN }}
-          gist_id: 0b0c5ac2b8977d5461d4b3276d120896
-          gist_description: "📺 BiliBili: 🛡️ ADBlock β"
-          file_path: dist/BiliBili.ADBlock.dev.stoverride
+      - name: Publish scripts, configuration and subscriptions together
+        env:
+          GH_TOKEN: ${{ secrets.GIST_TOKEN }}
+        run: |
+          node --input-type=module <<'JS'
+          import { readFile, writeFile } from "node:fs/promises";
+          const names = ["request.dev.bundle.js","response.dev.bundle.js","BiliBili.ADBlock.dev.sgmodule","BiliBili.ADBlock.dev.plugin","BiliBili.ADBlock.dev.snippet","BiliBili.ADBlock.dev.stoverride","config.dev.bundle.js","BiliBili.ADBlock.dev.boxjs.json"];
+          const files = Object.fromEntries(await Promise.all(names.map(async name => [name, { content: await readFile(`dist/${name}`, "utf8") }])));
+          await writeFile("gist-update.json", JSON.stringify({ description: "📺 BiliBili: 🛡️ ADBlock β", files }));
+          JS
+          gh api --method PATCH gists/0b0c5ac2b8977d5461d4b3276d120896 --input gist-update.json --silent

@@ -6,11 +6,12 @@
 #!icon = {{@package 'icon'}}
 #!category = {{@package 'organizationName'}}
 #!date = {{now "yyyy-MM-dd HH:mm:ss"}}
-#!version = {{@package 'version'}}
+#!version = {{version}}
 
 #[rewrite_local]
+^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$ url script-echo-response https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/config.dev.bundle.js
+^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/(?:api\/(?:get|set|delete)|settings\/(?:[a-zA-Z0-9_-]+\/?|assets\/app\.mjs))(?:\?.*)?$ url script-echo-response https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js
 # Biliverse 本地设置
-^https:\/\/biliverse\.github\.io\/settings\/api\/ADBlock(?:\?.*)?$ url script-echo-response https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js
 # 去除搜索中的大家都在搜
 ^https?:\/\/api\.vc\.bilibili\.com\/search_svr\/v\d\/Search\/recommend_words url reject-dict
 # 去除动态中的话题

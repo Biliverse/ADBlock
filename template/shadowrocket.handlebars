@@ -6,7 +6,7 @@
 #!icon = {{@package 'icon'}}
 #!category = {{@package 'organizationName'}}
 #!date = {{now "yyyy-MM-dd HH:mm:ss"}}
-#!version = {{@package 'version'}}
+#!version = {{version}}
 
 [Map Local]
 # 去除搜索中的大家都在搜
@@ -21,7 +21,8 @@
 ^https?:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? data-type=text data="{}" header="application/json"
 
 [Script]
-📺 BiliBili.ADBlock.Settings = type=http-request, pattern=^https:\/\/biliverse\.github\.io\/settings\/api\/ADBlock(?:\?.*)?$, requires-body=1, max-size=65536, script-path=https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js, argument={{{scriptParams}}}
+PreferencePanes.API = type=http-request, pattern=^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/(?:api\/(?:get|set|delete)|settings\/(?:[a-zA-Z0-9_-]+\/?|assets\/app\.mjs))(?:\?.*)?$, requires-body=1, max-size=65536, script-path=https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js
+PreferencePanes.Config.ADBlock = type=http-request, pattern=^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$, script-path=https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/config.bundle.js
 📺 BiliBili.ADBlock.defaultwords.request.grpc = type=http-request, pattern=^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$, binary-body-mode=1, script-path=https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js, argument={{{scriptParams}}}
 📺 BiliBili.ADBlock.feed.index.request.json = type=http-request,pattern=^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index\?, script-path=https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js, argument={{{scriptParams}}}
 📺 BiliBili.ADBlock.privacy.request = type=http-request, pattern=^https?:\/\/(cm\.bilibili\.com\/cm\/api\/(conversion\/mobile\/v2|fees\/wise)|adtrack\.qianwen\.com\/v3\/ad\/(show\/)?bilibili|tkio-redirect\.solar-engine\.com\/receive\/turl\/), script-path=https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js, argument={{{scriptParams}}}

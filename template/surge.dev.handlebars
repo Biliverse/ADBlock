@@ -6,11 +6,12 @@
 #!icon = {{@package 'icon'}}
 #!category = {{@package 'organizationName'}}
 #!date = {{now "yyyy-MM-dd HH:mm:ss"}}
-#!version = {{@package 'version'}}
+#!version = {{version}}
 #!arguments = {{{arguments}}}
 #!arguments-desc = {{{argumentsDesc}}}
 
 [Map Local]
+^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$ data-type=file data="https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/BiliBili.ADBlock.dev.boxjs.json" status-code=200 header="Content-Type:application/json; charset=utf-8|Cache-Control:no-store|X-PreferencePanes-Version:{{version}}"
 # 去除默认搜索词：最小合法空 gRPC 帧
 ^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ data-type=base64 data="AAAAAAA=" status-code=200 header="Content-Type:application/grpc|Content-Length:5"
 # 去除搜索中的大家都在搜
@@ -30,11 +31,8 @@
 # iPad端番剧推荐列表上方广告
 http-response-jq ^https:\/\/api\.bilibili\.com\/pgc\/view\/v2\/app\/season\? 'del(.data.payment)'
 
-[Map Local]
-^https:\/\/biliverse\.github\.io\/settings\/ADBlock\/(?:\?.*)?$ data-type=file data="https://biliverse.github.io/settings/assets/ADBlock.html" status-code=200 header="Content-Type:text/html; charset=utf-8"
-
 [Script]
-📺 BiliBili.ADBlock.Settings = type=http-request, pattern=^https:\/\/biliverse\.github\.io\/settings\/api\/ADBlock(?:\?.*)?$, requires-body=1, max-size=65536, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, argument={{{scriptParams}}}
+PreferencePanes.API = type=http-request, pattern=^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/(?:api\/(?:get|set|delete)|settings\/(?:[a-zA-Z0-9_-]+\/?|assets\/app\.mjs))(?:\?.*)?$, requires-body=1, max-size=65536, script-path=https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js
 📺 BiliBili.ADBlock.feed.index.request.json = type=http-request,pattern=^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index\?, engine=webview, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, argument={{{scriptParams}}}
 📺 BiliBili.ADBlock.privacy.request = type=http-request, pattern=^https?:\/\/(cm\.bilibili\.com\/cm\/api\/(conversion\/mobile\/v2|fees\/wise)|adtrack\.qianwen\.com\/v3\/ad\/(show\/)?bilibili|tkio-redirect\.solar-engine\.com\/receive\/turl\/), engine=webview, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, argument={{{scriptParams}}}
 📺 BiliBili.ADBlock.dm.request.grpc = type=http-request, pattern=^https:\/\/(grpc|app)\.bili(bili\.com|api\.net)\/bilibili\.community\.service\.dm\.v1\.DM\/DmSegMobile$, requires-body=1, binary-body-mode=1, engine=webview, max-size=65536, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, argument={{{scriptParams}}}

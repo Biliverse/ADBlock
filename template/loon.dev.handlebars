@@ -7,14 +7,14 @@
 #!tag = {{@package 'organizationName'}}
 #!system = {{@package 'system'}}
 #!date = {{now "yyyy-MM-dd HH:mm:ss"}}
-#!version = {{@package 'version'}}
+#!version = {{version}}
 #!system_version = {{ @package 'systemVersion'}}
 
 [Argument]
 {{{arguments}}}
 
 [Rewrite]
-^https:\/\/biliverse\.github\.io\/settings\/ADBlock\/(?:\?.*)?$ mock-response-body data-type=html data-path=https://biliverse.github.io/settings/assets/ADBlock.html status-code=200
+response if ${url} ~= /^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$/ then response.body.mock_file("json", "https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/BiliBili.ADBlock.dev.boxjs.json", 200) | response.header.set("X-PreferencePanes-Version", "{{version}}") | response.header.set("Cache-Control", "no-store")
 # 去除搜索中的大家都在搜
 ^https?:\/\/api\.vc\.bilibili\.com\/search_svr\/v\d\/Search\/recommend_words - reject-dict
 # 去除动态中的话题
@@ -31,7 +31,7 @@
 ^https:\/\/api\.bilibili\.com\/pgc\/view\/v2\/app\/season\? response-body-json-jq 'del(.data.payment)'
 
 [Script]
-http-request ^https:\/\/biliverse\.github\.io\/settings\/api\/ADBlock(?:\?.*)?$ requires-body=1, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, tag=📺 BiliBili.ADBlock.Settings, argument={{{scriptParams}}}
+http-request ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/(?:api\/(?:get|set|delete)|settings\/(?:[a-zA-Z0-9_-]+\/?|assets\/app\.mjs))(?:\?.*)?$ requires-body=1, script-path=https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js, tag=PreferencePanes.API
 http-request ^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ requires-body=0, binary-body-mode=1, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, tag=📺 BiliBili.ADBlock.defaultwords.request.grpc, argument={{{scriptParams}}}
 http-request ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index\? requires-body=0, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, tag=📺 BiliBili.ADBlock.request.json, argument={{{scriptParams}}}
 http-request ^https?:\/\/(cm\.bilibili\.com\/cm\/api\/(conversion\/mobile\/v2|fees\/wise)|adtrack\.qianwen\.com\/v3\/ad\/(show\/)?bilibili|tkio-redirect\.solar-engine\.com\/receive\/turl\/) requires-body=0, script-path=https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js, tag=📺 BiliBili.ADBlock.privacy.request, argument={{{scriptParams}}}
