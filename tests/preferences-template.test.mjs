@@ -9,7 +9,7 @@ test("settings integration installs separate web and module API scripts", async 
 		assert.ok(template.includes("https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js"), name);
 		assert.ok(template.includes("https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/web.js"), name);
 		assert.ok(template.includes("api\\/ADBlock(?:\\/(?:get|set|delete))?\\/?"), name);
-		assert.ok(template.includes("settings\\/(?:ADBlock\\/?|assets\\/app\\.mjs)"), name);
+		assert.ok(template.includes("settings\\/(?:ADBlock\\/?|assets\\/index\\.mjs)"), name);
 		assert.doesNotMatch(template, /api\\\/\(\?:get\|set\|delete\)\|settings/);
 		const line = template.split("\n").find(line => line.includes("configs") && line.includes("biliverse"));
 		assert.ok(line, name);
