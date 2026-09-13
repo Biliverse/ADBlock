@@ -41,7 +41,7 @@ http:
     - ^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/ListFlash - reject-dict
     - ^https?:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? - reject-dict
   script:
-    - match: ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$
+    - match: ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\?.*)?$
       name: PreferencePanes.Config.ADBlock
       type: request
       require-body: false

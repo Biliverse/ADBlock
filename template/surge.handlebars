@@ -11,7 +11,7 @@
 #!arguments-desc = {{{argumentsDesc}}}
 
 [Map Local]
-^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$ data-type=file data="https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/BiliBili.ADBlock.boxjs.json" status-code=200 header="Content-Type:application/json; charset=utf-8|Cache-Control:no-store|X-PreferencePanes-Version:{{version}}"
+^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\?.*)?$ data-type=file data="https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/BiliBili.ADBlock.boxjs.json" status-code=200 header="Content-Type:application/json; charset=utf-8|Cache-Control:no-store|X-PreferencePanes-Version:{{version}}"
 # 去除默认搜索词：最小合法空 gRPC 帧
 ^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ data-type=base64 data="AAAAAAA=" status-code=200 header="Content-Type:application/grpc|Content-Length:5"
 # 去除搜索中的大家都在搜
