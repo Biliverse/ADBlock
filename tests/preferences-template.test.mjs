@@ -2,13 +2,12 @@ import assert from "node:assert/strict";
 import { readdir, readFile } from "node:fs/promises";
 import test from "node:test";
 
-test("settings integration installs only the ADBlock configuration and API", async () => {
+test("settings integration installs only the ADBlock configuration", async () => {
 	for (const name of await readdir(new URL("../template/", import.meta.url))) {
 		if (!name.endsWith(".handlebars") || name.includes("rewrite")) continue;
 		const template = await readFile(new URL(`../template/${name}`, import.meta.url), "utf8");
-		assert.ok(template.includes("https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js"), name);
-		assert.ok(template.includes("api\\/ADBlock(?:\\/(?:get|set|delete))?\\/?"), name);
-		assert.doesNotMatch(template, /PreferencePanes\.Web|web\.js|\\\/settings\\\//, name);
+		assert.doesNotMatch(template, /NSNanoCat\/PreferencePanes\/releases\/latest\/download\/(?:api|web)\.js/, name);
+		assert.doesNotMatch(template, /PreferencePanes\.(?:API|Web)|\\\/api\\\/ADBlock|\\\/settings\\\//, name);
 		assert.doesNotMatch(template, /api\\\/\(\?:get\|set\|delete\)\|settings/);
 		const line = template.split("\n").find(line => line.includes("configs") && line.includes("biliverse"));
 		assert.ok(line, name);
