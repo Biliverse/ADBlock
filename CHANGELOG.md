@@ -1,3 +1,6 @@
+### 🔄 Other Changes
+  * 设置页面资源与模块 API 分离，分别使用 PreferencePanes 1.0.0 的 `web.js` 和 `api.js`
+
 ### 🛠️ Bug Fixes
   * 修复 grpc 响应头缺失的问题 by @VirgilClyne
 
