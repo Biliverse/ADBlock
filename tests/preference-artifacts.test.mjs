@@ -22,13 +22,25 @@ test("both release channels compile configuration responses from their own JSON 
 				vm.runInNewContext(files.get(`config${suffix}.bundle.js`), {
 					$environment: { "surge-version": "test" },
 					$script: { startTime: Date.now() / 1000 },
-					$request: { url: "https://biliverse.github.io/configs/Module", method: "GET" },
+					$request: { url: "https://biliverse.github.io/api/ADBlock", method: "GET" },
 					$done: result => resolve(result.response),
 					console: { log() {}, error() {} },
 				}),
 			);
 			assert.equal(response.status, 200);
+			assert.ok(response.headers["X-PreferencePanes-Version"]);
 			assert.deepEqual(JSON.parse(response.body), json);
+			const head = await new Promise(resolve =>
+				vm.runInNewContext(files.get(`config${suffix}.bundle.js`), {
+					$environment: { "surge-version": "test" },
+					$script: { startTime: Date.now() / 1000 },
+					$request: { url: "https://biliverse.github.io/api/ADBlock", method: "HEAD" },
+					$done: result => resolve(result.response),
+					console: { log() {}, error() {} },
+				}),
+			);
+			assert.equal(head.status, 200);
+			assert.equal(head.body, "");
 		}
 	} finally {
 		process.chdir(original);
