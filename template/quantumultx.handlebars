@@ -10,7 +10,6 @@
 
 #[rewrite_local]
 ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/configs\/ADBlock(?:\?.*)?$ url script-echo-response https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/config.bundle.js
-^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/settings\/(?:ADBlock\/?|assets\/index\.mjs)(?:\?.*)?$ url script-echo-response https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/web.js
 ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\/(?:get|set|delete))?\/?(?:\?.*)?$ url script-echo-response https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js
 # Biliverse 本地设置
 # 去除搜索中的大家都在搜

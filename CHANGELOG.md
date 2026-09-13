@@ -1,5 +1,5 @@
 ### 🔄 Other Changes
-  * 设置页面资源与模块 API 分离，分别使用 PreferencePanes 1.0.0 的 `web.js` 和 `api.js`
+  * 移除重复的 PreferencePanes `web.js` 和 `/settings/**` 规则，仅保留 1.1.1 `api.js`；设置前端统一由 Enhanced 提供
 
 ### 🛠️ Bug Fixes
   * 修复 grpc 响应头缺失的问题 by @VirgilClyne

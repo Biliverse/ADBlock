@@ -45,10 +45,6 @@ http:
       name: PreferencePanes.Config.ADBlock
       type: request
       require-body: false
-    - match: ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/settings\/(?:ADBlock\/?|assets\/index\.mjs)(?:\?.*)?$
-      name: PreferencePanes.Web
-      type: request
-      require-body: false
     - match: ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\/(?:get|set|delete))?\/?(?:\?.*)?$
       name: PreferencePanes.API
       type: request
@@ -149,9 +145,6 @@ http:
 script-providers:
   PreferencePanes.Config.ADBlock:
     url: https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/config.dev.bundle.js
-    interval: 86400
-  PreferencePanes.Web:
-    url: https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/web.js
     interval: 86400
   PreferencePanes.API:
     url: https://github.com/NSNanoCat/PreferencePanes/releases/latest/download/api.js
