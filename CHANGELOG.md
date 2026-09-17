@@ -1,13 +1,7 @@
+# v0.6.27
+
 ### 🔄 Other Changes
-  * 将 `HEAD/GET /api/ADBlock` 直接 Mock 到同版 BoxJS；移除旧 `/configs/ADBlock` 以及全部 PreferencePanes `web.js`、`api.js` 和 `/settings/**` 规则
 
-### 🛠️ Bug Fixes
-  * 修复 grpc 响应头缺失的问题 by @VirgilClyne
-
-### 🔣 Dependencies
-  * 升级了 `@nsnanocat/url`
-  * 升级了 `@nsnanocat/util`
-    * `Lodash` polyfill 新增 `merge` 能力
-    * 现在来自`插件`与`模块`等的 `$argument` 配置将深层合并覆盖 `$persistentStore (BoxJs)` 的配置
-    * 即，有相同键名时，`$argument` 的值会覆盖 `$persistentStore (BoxJs)` 的值
-    * 用户在未更新 `$persistentStore (BoxJs)` 的情况下也不会影响新功能的配置字段
+  * 升级 `@nsnanocat/util`。
+  * 持久化储存空间由 `BiliBili` 更名为 `Biliverse`；既有设置与缓存不会继续读取。
+  * BoxJS 自动生成的配置面板与 Biliverse 聚合面板统一使用新的储存空间。

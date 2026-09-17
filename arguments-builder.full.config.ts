@@ -27,7 +27,7 @@ export const output = {
 	},
 	boxjsSettings: {
 		path: "./template/boxjs.settings.json",
-		scope: "@BiliBili.ADBlock.Settings",
+		scope: "@Biliverse.ADBlock.Settings",
 	},
 };
 

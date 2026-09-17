@@ -10,6 +10,6 @@ export default defineConfig({
 			{ path: "./dist/BiliBili.ADBlock.dev.snippet", template: "./template/quantumultx.dev.handlebars" },
 			{ path: "./dist/BiliBili.ADBlock.dev.stoverride", template: "./template/stash.dev.handlebars" },
 		],
-		boxjsSettings: { path: "./dist/BiliBili.ADBlock.dev.boxjs.json", scope: "@BiliBili.ADBlock.Settings" },
+		boxjsSettings: { path: "./dist/BiliBili.ADBlock.dev.boxjs.json", scope: "@Biliverse.ADBlock.Settings" },
 	},
 });

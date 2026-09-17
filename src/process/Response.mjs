@@ -29,9 +29,9 @@ export async function Response($request, $response, KV) {
 	 * 设置
 	 * @type {{Settings: import('./types').Settings}}
 	 */
-	const { Settings, Caches } = await setENV("BiliBili", "ADBlock", database, KV);
+	const { Settings, Caches } = await setENV("Biliverse", "ADBlock", database, KV);
 	// 原实现还会解构 Configs；当前流程暂未使用，保留下面的原结构供后续功能恢复。
-	// const { Settings, Caches, Configs } = await setENV("BiliBili", "ADBlock", database, KV);
+	// const { Settings, Caches, Configs } = await setENV("Biliverse", "ADBlock", database, KV);
 	const adBlock = new ADBlock();
 	Console.logLevel = Settings.LogLevel;
 	// 重要：环境合并完成后才能输出分级日志，确保整次执行只使用 BoxJS 最终确定的日志等级。
@@ -121,8 +121,8 @@ export async function Response($request, $response, KV) {
 																Caches.banner_hash = item.hash;
 																// 缓存 banner_hash；缺少该字段时会出现无法伪造的活动页。
 																// Cache banner_hash; without it, an activity page that cannot be forged appears.
-																if (KV) await KV.setItem("@BiliBili.ADBlock.Caches", Caches);
-																else Storage.setItem("@BiliBili.ADBlock.Caches", Caches);
+																if (KV) await KV.setItem("@Biliverse.ADBlock.Caches", Caches);
+																else Storage.setItem("@Biliverse.ADBlock.Caches", Caches);
 																Console.info("✅ 推荐页活动大图去除");
 																return undefined;
 															case false:
@@ -196,7 +196,7 @@ export async function Response($request, $response, KV) {
 										body.data.items = body.data.items.filter(fix => fix !== undefined);
 									}
 									async function fixPosition() {
-										let itemsCache = KV ? await KV.getItem("@BiliBili.Index.Caches", []) : Storage.getItem("@BiliBili.Index.Caches", []);
+										let itemsCache = KV ? await KV.getItem("@Biliverse.Index.Caches", []) : Storage.getItem("@Biliverse.Index.Caches", []);
 										if (!Array.isArray(itemsCache)) itemsCache = [];
 										let singleItem;
 										if (itemsCache.length > 0) {
@@ -236,8 +236,8 @@ export async function Response($request, $response, KV) {
 																return item;
 															})
 															.filter(fix => fix !== undefined);
-														if (KV) await KV.setItem("@BiliBili.Index.Caches", body.data.items);
-														else Storage.setItem("@BiliBili.Index.Caches", body.data.items);
+														if (KV) await KV.setItem("@Biliverse.Index.Caches", body.data.items);
+														else Storage.setItem("@Biliverse.Index.Caches", body.data.items);
 														Console.info("✅ 推荐页缓存数组补充成功");
 													} else {
 														Console.warn("访问推荐页尝试填补失败");
@@ -246,15 +246,15 @@ export async function Response($request, $response, KV) {
 													Console.error(e, response);
 												}
 											});
-											itemsCache = KV ? await KV.getItem("@BiliBili.Index.Caches", []) : Storage.getItem("@BiliBili.Index.Caches", []);
+											itemsCache = KV ? await KV.getItem("@Biliverse.Index.Caches", []) : Storage.getItem("@Biliverse.Index.Caches", []);
 											if (!Array.isArray(itemsCache)) itemsCache = [];
 											if (itemsCache.length > 0) {
 												singleItem = itemsCache.pop();
 												Console.info("✅ 推荐页空缺位填充成功");
 											}
 										}
-										if (KV) await KV.setItem("@BiliBili.Index.Caches", itemsCache);
-										else Storage.setItem("@BiliBili.Index.Caches", itemsCache);
+										if (KV) await KV.setItem("@Biliverse.Index.Caches", itemsCache);
+										else Storage.setItem("@Biliverse.Index.Caches", itemsCache);
 										return singleItem;
 									}
 									break;

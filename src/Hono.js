@@ -17,7 +17,7 @@ export default new Hono()
 					env: {
 						namespaces: new Map([
 							["", c.env.PersistentStore],
-							["@BiliBili.ADBlock", c.env.ADBlock],
+							["@Biliverse.ADBlock", c.env.ADBlock],
 						]),
 					},
 				})

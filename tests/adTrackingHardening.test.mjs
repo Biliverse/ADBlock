@@ -427,7 +427,7 @@ test("keeps every client template and the BoxJS control synchronized", async () 
 	}
 
 	const boxjs = JSON.parse(await readFile(new URL("../template/boxjs.settings.json", import.meta.url), "utf8"));
-	const controls = boxjs.filter(item => item.id === "@BiliBili.ADBlock.Settings.View.AD");
+	const controls = boxjs.filter(item => item.id === "@Biliverse.ADBlock.Settings.View.AD");
 	assert.equal(controls.length, 1);
 	assert.equal(controls[0].val, true);
 	assert.equal(controls[0].desc, "是否启用此处修改");

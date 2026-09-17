@@ -43,8 +43,8 @@ test("loads ADBlock caches from the request-scoped Worker KV adapter", async () 
 			return { banner_hash: "worker-cache" };
 		},
 	};
-	const { Caches } = await setENV("BiliBili", "ADBlock", database, KV);
-	assert.deepEqual(requestedKeys, ["@BiliBili.ADBlock.Caches"]);
+	const { Caches } = await setENV("Biliverse", "ADBlock", database, KV);
+	assert.deepEqual(requestedKeys, ["@Biliverse.ADBlock.Caches"]);
 	assert.deepEqual(Caches, { banner_hash: "worker-cache" });
 });
 

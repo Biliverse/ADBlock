@@ -19,9 +19,9 @@ export async function Request($request, KV) {
 	 * 设置
 	 * @type {{Settings: import('./types').Settings}}
 	 */
-	const { Settings, Caches } = await setENV("BiliBili", "ADBlock", database, KV);
+	const { Settings, Caches } = await setENV("Biliverse", "ADBlock", database, KV);
 	// 原实现还会解构 Configs；当前流程暂未使用，保留下面的原结构供后续功能恢复。
-	// const { Settings, Caches, Configs } = await setENV("BiliBili", "ADBlock", database, KV);
+	// const { Settings, Caches, Configs } = await setENV("Biliverse", "ADBlock", database, KV);
 	Console.logLevel = Settings.LogLevel;
 	// 重要：环境合并完成后才能输出分级日志，确保整次执行只使用 BoxJS 最终确定的日志等级。
 	Console.info(`url: ${url.toJSON()}`);
