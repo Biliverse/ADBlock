@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package bilibili.app.viewunite.v1;
+
+import "bilibili/app/viewunite/v1/viewunite.proto";
+
+// Wire-compatible subset of the AIRelateAsync response. Leave recommendations
+// and other fields undeclared so the runtime preserves their original bytes.
+message AIRelateReply {
+    CM cm = 1;
+}
