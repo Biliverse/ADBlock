@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+package bilibili.app.viewunite.v1;
+
+import "bilibili/app/viewunite/v1/viewunite.proto";
+
+// Wire-compatible subset of the AIRelateAsync response. Keep card payloads as
+// bytes so filtering does not reserialize the recommendations that remain.
+message AIRelateCards {
+    repeated bytes cards = 1;
+}
+
+message AIRelateModule {
+    int32 type = 1;
+    AIRelateCards relates = 22;
+}
+
+message AIRelateTab {
+    repeated AIRelateModule modules = 1;
+}
+
+message AIRelateReply {
+    CM cm = 1;
+    AIRelateTab tab = 2;
+}

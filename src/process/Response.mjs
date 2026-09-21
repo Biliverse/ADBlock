@@ -10,8 +10,9 @@ import { ModeStatusReply } from "../protobuf/bilibili/app/interface/teenagers.js
 import { FragmentType, PlayViewUniteReply } from "../protobuf/bilibili/app/playerunite/v1/playerunite.js";
 import { PlayViewReply } from "../protobuf/bilibili/app/playurl/v1/playurl.js";
 import { PlayerRelatesReply, TFInfoReply, ViewProgressReply, RelatesFeedReply as ViewRelatesFeedReply, ViewReply } from "../protobuf/bilibili/app/view/v1/view.js";
+import { AIRelateReply } from "../protobuf/bilibili/app/viewunite/v1/airelate.js";
 import { ViewProgressReply as ViewUniteProgressReply } from "../protobuf/bilibili/app/viewunite/v1/viewprogress.js";
-import { RelatesFeedReply, ViewReply as ViewUniteReply } from "../protobuf/bilibili/app/viewunite/v1/viewunite.js";
+import { RelateCard, RelatesFeedReply, ViewReply as ViewUniteReply } from "../protobuf/bilibili/app/viewunite/v1/viewunite.js";
 import { DmColorfulType, DmSegMobileReply, DmViewReply } from "../protobuf/bilibili/community/service/dm/v1/dm.js";
 import { DetailListReply, MainListReply, ReplyInfoReply } from "../protobuf/bilibili/main/community/reply/v1/reply.js";
 import { SubjectDescriptionReply } from "../protobuf/bilibili/main/community/reply/v2/reply.js";
@@ -743,6 +744,25 @@ export async function Response($request, $response, KV) {
 													Console.warn("用户设置up主推荐广告不去除");
 													break;
 											}
+											break;
+										case "AIRelateAsync": // 异步补充的视频页广告
+											if (Settings?.View?.AD !== false) {
+												body = AIRelateReply.fromBinary(rawBody);
+												let changed = false;
+												if (body.cm) {
+													Console.info("✅ 视频页异步广告栏去除");
+													body.cm = undefined;
+													changed = true;
+												}
+												for (const module of body.tab?.modules ?? []) {
+													if (module.type !== 28 || !module.relates) continue;
+													const oldLength = module.relates.cards.length;
+													// 仅解码卡片以判定广告，保留其余卡片的原始字节。
+													module.relates.cards = module.relates.cards.filter(card => filterRelateCard(RelateCard.fromBinary(card)));
+													if (module.relates.cards.length !== oldLength) changed = true;
+												}
+												if (changed) rawBody = AIRelateReply.toBinary(body);
+											} else Console.warn("用户设置视频页异步广告不去除");
 											break;
 										case "RelatesFeed": // 播放页下方推荐卡
 											body = RelatesFeedReply.fromBinary(rawBody);
