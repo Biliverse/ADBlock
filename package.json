@@ -74,5 +74,10 @@
 		"crypto-js": "^4.2.0",
 		"fetch-cookie": "^3.2.0",
 		"hono": "^4.13.5"
+	},
+	"overrides": {
+		"@iringo/surge2egern": {
+			"puppeteer": "25.7.0"
+		}
 	}
 }

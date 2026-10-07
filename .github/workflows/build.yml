@@ -28,6 +28,7 @@ jobs:
         with:
           package-token: ${{ secrets.PACKAGE_TOKEN }}
           build-command: npm run build
+          extra-command: test -s dist/BiliBili.ADBlock.yaml
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v7
         with:
