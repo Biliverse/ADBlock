@@ -243,6 +243,19 @@ export const args: ArgumentItem[] = [
 		description: "同时启用响应跟踪清理、商业链接与上报阻断，并移除直播show/click callback；可能影响跳转、推荐和翻页。",
 	},
 	{
+		key: "Storage",
+		name: "[储存] 配置类型",
+		defaultValue: "PersistentStore",
+		type: "string",
+		exclude: ["boxjs", "dts"],
+		options: [
+			{ key: "Argument", label: "优先使用 $argument，其次使用 PersistentStore (BoxJS)，最后使用默认配置" },
+			{ key: "PersistentStore", label: "优先使用 PersistentStore (BoxJS)，其次使用 $argument，最后使用默认配置" },
+			{ key: "database", label: "只使用默认配置" },
+		],
+		description: "仅由模板参数选择配置来源；默认优先使用 PersistentStore (BoxJS)。",
+	},
+	{
 		key: "LogLevel",
 		name: "[调试] 日志等级",
 		type: "string",

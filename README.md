@@ -13,4 +13,6 @@ AIRelate 使用共享 `Module` 的 `data.oneofKind` 与 `data.relates.cards`，�
 
 配置探测的响应头 `X-PreferencePanes-Version` 与本次脚本构建版本一致：dev 为 `dev.<commit>`，正式版为发布版本。主页只发送 HEAD，不读取设置。Loon 使用原生 `rewrite_v2` Mock 与响应头动作，需要 Loon 3.5.1 或更新版本。
 
+正式版参数由 `arguments-builder.release.config.ts` 生成，开发版由 `arguments-builder.dev.config.ts` 生成。`Storage` 仅提供给模板 argument，不写入 BoxJS、设置面板或 `Settings` 类型。默认 `PersistentStore` 按默认配置 → 模块参数 → 持久化设置合并；`Argument` 按默认配置 → 持久化设置 → 模块参数合并；`database` 只读取默认配置。配置合并直接使用 `@nsnanocat/util` 的 `getStorage`。
+
 ADBlock 只匹配 `biliverse.github.io` 与 `app.bilibili.com` 的精确 `/api/ADBlock`。官方域名仅作为本机代理映射地址，BoxJS 仍由本模块的同版 Gist / Release 提供；主页、通用模块页面、固定存储 API 和公共静态资源均由 Enhanced 安装。

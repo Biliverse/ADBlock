@@ -37,7 +37,8 @@ export async function Response($request, $response, KV) {
 	// const { Settings, Caches, Configs } = await setENV("Biliverse", "ADBlock", database, KV);
 	const adBlock = new ADBlock();
 	Console.logLevel = Settings.LogLevel;
-	// 重要：环境合并完成后才能输出分级日志，确保整次执行只使用 BoxJS 最终确定的日志等级。
+	// 环境合并完成后再输出分级日志，确保整次执行使用所选配置来源的最终日志等级。
+	// Emit leveled logs after merging settings so the selected configuration sources determine the final log level.
 	Console.info(`url: ${url.toJSON()}`);
 	Console.info(`PATHs: ${PATHs}`);
 	Console.info(`FORMAT: ${FORMAT}`);

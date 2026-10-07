@@ -1,11 +1,13 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import { DmSegMobileReply, DmSegMobileReq } from "@biliverse/protobuf/bilibili/community/service/dm/v1/dm.js";
 import gRPC from "@nsnanocat/grpc";
+import { Console, Storage } from "@nsnanocat/util";
 import HonoWorkerAdapter from "../src/class/HonoWorkerAdapter.mjs";
 import database from "../src/function/database.mjs";
 import setENV from "../src/function/setENV.mjs";
+import { Request } from "../src/process/Request.mjs";
 import { Response as DevResponse } from "../src/process/Response.dev.mjs";
-import { DmSegMobileReply, DmSegMobileReq } from "@biliverse/protobuf/bilibili/community/service/dm/v1/dm.js";
 
 test("rewrites Pages and Workers paths to the original upstream host", () => {
 	const pages = HonoWorkerAdapter.routeRewrite(new URL("https://adblock-dux.pages.dev/api.bilibili.com/x/v2/feed/index?foo=bar"), "api.bilibili.com/x/v2/feed/index");
@@ -46,6 +48,37 @@ test("loads ADBlock caches from the request-scoped Worker KV adapter", async () 
 	const { Caches } = await setENV("Biliverse", "ADBlock", database, KV);
 	assert.deepEqual(requestedKeys, ["@Biliverse.ADBlock.Caches"]);
 	assert.deepEqual(Caches, { banner_hash: "worker-cache" });
+});
+
+test("template Storage controls commercial blocking and log priority without using the persisted selector", async () => {
+	const originalGetItem = Storage.getItem;
+	const originalArgument = globalThis.$argument;
+	const originalLogLevel = Console.logLevel;
+	const originalDefaults = database.Default.Settings;
+	Storage.getItem = () => ({ ADBlock: { Settings: { Storage: "Argument", Privacy: { BlockBiliCommercial: true }, LogLevel: "ERROR" } } });
+	try {
+		for (const [mode, blocked, logLevel] of [
+			[undefined, true, "ERROR"],
+			["PersistentStore", true, "ERROR"],
+			["Argument", false, "OFF"],
+			["database", false, "WARN"],
+		]) {
+			database.Default.Settings = structuredClone(originalDefaults);
+			const request = { method: "POST", url: "https://cm.bilibili.com/cm/api/conversion/mobile/v2", headers: { "biliverse-args": `${mode ? `Storage=${mode}&` : ""}Privacy.BlockBiliCommercial=false&LogLevel=OFF` } };
+			HonoWorkerAdapter.buildArgument(request);
+			const { $response } = await Request(request);
+			assert.equal($response?.status, blocked ? 200 : undefined, mode);
+			if (blocked) assert.deepEqual(JSON.parse($response.body), { code: 0, message: "success" });
+			assert.equal(Console.logLevel, logLevel, mode);
+			assert.equal(globalThis.$argument.Storage, mode);
+			assert.deepEqual(request.headers, {});
+		}
+	} finally {
+		Storage.getItem = originalGetItem;
+		globalThis.$argument = originalArgument;
+		Console.logLevel = originalLogLevel;
+		database.Default.Settings = originalDefaults;
+	}
 });
 
 test("development response parses the Airborne request payload", async () => {
