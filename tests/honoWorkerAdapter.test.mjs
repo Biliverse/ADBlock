@@ -5,7 +5,7 @@ import HonoWorkerAdapter from "../src/class/HonoWorkerAdapter.mjs";
 import database from "../src/function/database.mjs";
 import setENV from "../src/function/setENV.mjs";
 import { Response as DevResponse } from "../src/process/Response.dev.mjs";
-import { DmSegMobileReply, DmSegMobileReq } from "../src/protobuf/bilibili/community/service/dm/v1/dm.js";
+import { DmSegMobileReply, DmSegMobileReq } from "@biliverse/protobuf/bilibili/community/service/dm/v1/dm.js";
 
 test("rewrites Pages and Workers paths to the original upstream host", () => {
 	const pages = HonoWorkerAdapter.routeRewrite(new URL("https://adblock-dux.pages.dev/api.bilibili.com/x/v2/feed/index?foo=bar"), "api.bilibili.com/x/v2/feed/index");

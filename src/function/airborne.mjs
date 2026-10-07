@@ -1,6 +1,6 @@
 import gRPC from "@nsnanocat/grpc";
 import { Console, fetch, Storage } from "@nsnanocat/util";
-import { DmColorfulType, DmSegMobileReq } from "../protobuf/bilibili/community/service/dm/v1/dm.js";
+import { DmColorfulType, DmSegMobileReq } from "@biliverse/protobuf/bilibili/community/service/dm/v1/dm.js";
 
 const AIRBORNE_REQUEST_CACHE_PREFIX = "BiliBili.ADBlock.Airborne";
 

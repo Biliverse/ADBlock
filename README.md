@@ -1,6 +1,12 @@
 # 🪐 Biliverse: 🛡️ ADBlock
 哔哩哔哩app去广告
 
+## Protobuf
+
+运行时协议及其 JavaScript、TypeScript 类型由 `@biliverse/protobuf` package 统一提供，源码维护在 [Biliverse/protobuf](https://github.com/Biliverse/protobuf)。ADBlock 直接导入 package，不再保存本地协议或生成文件。完整版定义以 BACNext 和 Apifox 为对照来源。
+
+AIRelate 使用共享 `Module` 的 `data.oneofKind` 与 `data.relates.cards`，卡片直接以 `RelateCard` 结构判定广告。未发生删除时保留原响应字节；发生删除时保留正常数据和未知字段。旧 View 广告标签使用 `TabOtype.CmURI`，广告消息使用真实 `Any` 类型，`VideoGuide` 按整条消息删除。正式依赖为 `@biliverse/protobuf ^1.1.0`。
+
 ## 设置面板
 
 接入模板只将版本对应的 BoxJS JSON Mock 到 `/api/ADBlock`。dev 的 JSON、纯配置响应和订阅与业务脚本一次性发布到同一个 Gist；正式版 JSON 固定到对应 Release tag。通用设置前端与固定存储 API 由 Enhanced 唯一安装，ADBlock 不携带 PreferencePanes `web.js`、`api.js` 或任何 `/settings/**` 规则。

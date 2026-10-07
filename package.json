@@ -67,6 +67,7 @@
 	},
 	"dependencies": {
 		"@auraflare/shared": "^1.1.1",
+		"@biliverse/protobuf": "^1.1.0",
 		"@nsnanocat/grpc": "^1.1.0",
 		"@nsnanocat/util": "^2.7.5",
 		"@protobuf-ts/runtime": "^2.11.1",

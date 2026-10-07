@@ -6,7 +6,8 @@ import gRPC from "@nsnanocat/grpc";
 import { BinaryWriter, WireType } from "@protobuf-ts/runtime";
 import HonoWorkerAdapter from "../src/class/HonoWorkerAdapter.mjs";
 import { Response } from "../src/process/Response.mjs";
-import { Module } from "../src/protobuf/bilibili/app/viewunite/v1/viewunite.js";
+import { Module } from "@biliverse/protobuf/bilibili/app/viewunite/common.js";
+import { AIRelateReply } from "@biliverse/protobuf/bilibili/app/viewunite/v1/airelate.js";
 
 const service = "bilibili.app.viewunite.v1.View";
 const url = `https://grpc.biliapi.net/${service}/AIRelateAsync`;
@@ -80,12 +81,12 @@ test("AIRelateAsync preserves ad-free replies without CM", async () => {
 	}
 });
 
-test("AIRelateAsync filters recommendation ads while preserving ordinary card bytes and unknown metadata", async () => {
+test("AIRelateAsync filters recommendation ads while preserving ordinary card data and unknown metadata", async () => {
 	for (const compressed of [false, true]) {
 		for (const banner of [new Uint8Array(), cm]) {
 			const payload = concat(banner, recommendationReply([normalCard, ...adCards, unmarkedCard, futureCard]));
 			const result = await process(payload, { compressed });
-			assert.deepEqual(gRPC.decode(result.body), recommendationReply([normalCard, unmarkedCard, futureCard]));
+			assert.deepEqual(AIRelateReply.fromBinary(gRPC.decode(result.body)), AIRelateReply.fromBinary(recommendationReply([normalCard, unmarkedCard, futureCard])));
 			assert.equal(result.headers["grpc-status"], "0");
 		}
 	}
@@ -113,7 +114,26 @@ test("AIRelateAsync filters every recommendation module and preserves other modu
 	const payload = bytesField(2, concat(bytesField(1, recommendationModule([normalCard, adCards[0]])), bytesField(1, recommendationModule([adCards[1], unmarkedCard])), bytesField(1, otherModule)));
 	const expected = bytesField(2, concat(bytesField(1, recommendationModule([normalCard])), bytesField(1, recommendationModule([unmarkedCard])), bytesField(1, otherModule)));
 	const result = await process(payload);
-	assert.deepEqual(gRPC.decode(result.body), expected);
+	assert.deepEqual(AIRelateReply.fromBinary(gRPC.decode(result.body)), AIRelateReply.fromBinary(expected));
+});
+
+test("AIRelateAsync respects the final active oneof member when filtering recommendations", async () => {
+	for (const removeCM of [false, true]) {
+		const inactiveRelates = recommendationModule([adCards[0], normalCard]);
+		const banner = bytesField(23, opaque);
+		const payload = concat(removeCM ? cm : new Uint8Array(), bytesField(2, bytesField(1, concat(inactiveRelates, banner))));
+		const result = await process(payload);
+		if (!removeCM) assert.deepEqual(gRPC.decode(result.body), payload);
+		const reply = AIRelateReply.fromBinary(gRPC.decode(result.body));
+		assert.equal(reply.cm, undefined);
+		assert.equal(reply.tab.modules[0].data.oneofKind, "banner");
+		assert.deepEqual(reply.tab.modules[0].data.banner, Module.fromBinary(concat(inactiveRelates, banner)).data.banner);
+	}
+	const activeRelates = concat(bytesField(23, opaque), recommendationModule([adCards[0], normalCard]));
+	const result = await process(bytesField(2, bytesField(1, activeRelates)));
+	const reply = AIRelateReply.fromBinary(gRPC.decode(result.body));
+	assert.equal(reply.tab.modules[0].data.oneofKind, "relates");
+	assert.deepEqual(reply.tab.modules[0], Module.fromBinary(recommendationModule([normalCard])));
 });
 
 test("playback response templates match AIRelateAsync without matching other services", async () => {
