@@ -31,7 +31,7 @@ export const output = {
 	},
 };
 
-export const args: ArgumentItem[] = [
+export const splash: ArgumentItem[] = [
 	{
 		key: "Splash",
 		name: "[开屏] 去除广告",
@@ -39,6 +39,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "是否启用此处修改",
 	},
+];
+
+export const feed: ArgumentItem[] = [
 	{
 		key: "Feed.AD",
 		name: "[推荐] 去除广告",
@@ -81,6 +84,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "移除Story中的“助TA必火”等商业推广按钮，不删除视频卡片。",
 	},
+];
+
+export const search: ArgumentItem[] = [
 	{
 		key: "Search.AD",
 		name: "[搜索] 去除广告",
@@ -102,6 +108,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "是否启用此处修改",
 	},
+];
+
+export const pgc: ArgumentItem[] = [
 	{
 		key: "PGC.AD",
 		name: "[番剧电影] 去除广告",
@@ -109,6 +118,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "是否启用此处修改",
 	},
+];
+
+export const xlive: ArgumentItem[] = [
 	{
 		key: "Xlive.AD",
 		name: "[直播] 去除广告",
@@ -130,6 +142,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "只移除直播small_card_v1.subtitle_style.link中的trackid，保留播放、清晰度和会话参数。",
 	},
+];
+
+export const dynamic: ArgumentItem[] = [
 	{
 		key: "Dynamic.HotTopics",
 		name: "[动态] 去除“热门话题”",
@@ -165,6 +180,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "过滤DynAllPersonal与DynVideoPersonal中的cardType=15；当前抓包尚无广告阳性样本。",
 	},
+];
+
+export const view: ArgumentItem[] = [
 	{
 		key: "View.AD",
 		name: "[视频] 去除播放页广告",
@@ -172,6 +190,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "是否启用此处修改",
 	},
+];
+
+export const dm: ArgumentItem[] = [
 	{
 		key: "DM.Command",
 		name: "[弹幕] 去除交互式弹幕",
@@ -193,6 +214,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "是否启用此处修改",
 	},
+];
+
+export const reply: ArgumentItem[] = [
 	{
 		key: "Reply.AD",
 		name: "[评论] 去除广告",
@@ -214,6 +238,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "移除SubjectDescription中的商品与商业助手按钮(type 5/8)；当前抓包中它们均为隐藏状态。",
 	},
+];
+
+export const privacy: ArgumentItem[] = [
 	{
 		key: "Privacy.Tracking",
 		name: "[隐私] 移除响应链接跟踪参数",
@@ -242,6 +269,9 @@ export const args: ArgumentItem[] = [
 		type: "boolean",
 		description: "同时启用响应跟踪清理、商业链接与上报阻断，并移除直播show/click callback；可能影响跳转、推荐和翻页。",
 	},
+];
+
+export const storage: ArgumentItem[] = [
 	{
 		key: "Storage",
 		name: "[储存] 配置类型",
@@ -255,6 +285,9 @@ export const args: ArgumentItem[] = [
 		],
 		description: "仅由模板参数选择配置来源；默认优先使用 PersistentStore (BoxJS)。",
 	},
+];
+
+export const logLevel: ArgumentItem[] = [
 	{
 		key: "LogLevel",
 		name: "[调试] 日志等级",
@@ -272,6 +305,7 @@ export const args: ArgumentItem[] = [
 	},
 ];
 
-export const argsFull: ArgumentItem[] = [...args];
-
-export default defineConfig({ output, args: argsFull });
+export default defineConfig({
+	output,
+	args: [...splash, ...feed, ...search, ...pgc, ...xlive, ...dynamic, ...view, ...dm, ...reply, ...privacy, ...storage, ...logLevel],
+});
