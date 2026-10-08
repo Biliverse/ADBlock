@@ -11,6 +11,8 @@ AIRelate 使用共享 `Module` 的 `data.oneofKind` 与 `data.relates.cards`，�
 
 接入模板只将版本对应的 BoxJS JSON Mock 到 `/api/ADBlock`。dev 的 JSON、纯配置响应和订阅与业务脚本一次性发布到同一个 Gist；正式版 JSON 固定到对应 Release tag。通用设置前端与固定存储 API 由 Enhanced 唯一安装，ADBlock 不携带 PreferencePanes `web.js`、`api.js` 或任何 `/settings/**` 规则。
 
+Surge、Loon 和 Quantumult X 直接 Mock 同版本的远程 JSON，并提供 `X-PreferencePanes-Version` 响应头。Stash、Shadowrocket 使用 `config[.dev].bundle.js` 返回同一份配置定义；该脚本只构造配置响应，不包含设置 API 解析、页面渲染或存储读写。
+
 配置探测的响应头 `X-PreferencePanes-Version` 与本次脚本构建版本一致：dev 为 `dev.<commit>`，正式版为发布版本。主页只发送 HEAD，不读取设置。Loon 使用原生 `rewrite_v2` Mock 与响应头动作，需要 Loon 3.5.1 或更新版本。
 
 `arguments-builder.full.config.ts` 按业务分组定义全部参数，并汇总生成完整 BoxJS 设置与类型声明；`arguments-builder.release.config.ts` 和 `arguments-builder.dev.config.ts` 分别导入并组合所需参数组，生成各版本模板与 BoxJS JSON。当前正式版与开发版均选用全部参数组，保留现有选项、默认值与顺序。`Storage` 仅提供给模板 argument，不写入 BoxJS、设置面板或 `Settings` 类型。默认 `PersistentStore` 按默认配置 → 模块参数 → 持久化设置合并；`Argument` 按默认配置 → 持久化设置 → 模块参数合并；`database` 只读取默认配置。配置合并直接使用 `@nsnanocat/util` 的 `getStorage`。

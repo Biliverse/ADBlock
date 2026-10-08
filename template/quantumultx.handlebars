@@ -9,7 +9,7 @@
 #!version = {{version}}
 
 #[rewrite_local]
-^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\?.*)?$ url script-echo-response https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/config.bundle.js
+^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\?.*)?$ url echo-response application/json\r\nX-PreferencePanes-Version: {{version}} echo-response https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/BiliBili.ADBlock.boxjs.json
 # Biliverse 本地设置
 # 去除搜索中的大家都在搜
 ^https?:\/\/api\.vc\.bilibili\.com\/search_svr\/v\d\/Search\/recommend_words url reject-dict
