@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { AIRelateReply } from "@biliverse/protobuf/bilibili/app/viewunite/v1/airelate.js";
 import { MainListReply } from "@biliverse/protobuf/bilibili/main/community/reply/v1/reply.js";
@@ -23,6 +24,25 @@ const fixtures = [
 		expected: Uint8Array.from([...MainListReply.toBinary(comments), ...unknown]),
 	},
 ];
+
+test("Surge DefaultWords mocks return a complete empty gRPC response", async () => {
+	for (const name of ["surge.handlebars", "surge.dev.handlebars"]) {
+		const template = await readFile(new URL(`../template/${name}`, import.meta.url), "utf8");
+		const rule = template.split("\n").find(line => line.startsWith("^") && line.includes("DefaultWords"));
+		const [, pattern, data, status, header] = rule.match(/^(.*?) data-type=base64 data="([^"]+)" status-code=(\d+) header="([^"]+)"$/);
+		const headers = Object.fromEntries(header.split("|").map(field => field.split(":")));
+		const body = Buffer.from(data, "base64");
+		for (const hostname of ["grpc.biliapi.net", "app.biliapi.net", "app.bilibili.com", "app.biliapi.com"]) {
+			assert.match(`https://${hostname}/bilibili.app.interface.v1.Search/DefaultWords`, new RegExp(pattern));
+		}
+		assert.equal(status, "200");
+		assert.equal(headers["Content-Type"], "application/grpc");
+		assert.equal(Number(headers["Content-Length"]), body.byteLength);
+		assert.deepEqual([...body], [0, 0, 0, 0, 0]);
+		assert.equal(headers["grpc-status"], "0", name);
+		assert.equal(gRPC.decode(body).byteLength, 0);
+	}
+});
 
 test("gRPC completion follows the client and Moss engine without overwriting existing status", () => {
 	for (const client of clients) {
