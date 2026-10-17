@@ -3,7 +3,6 @@ import { Console } from "@nsnanocat/util";
 import MD5 from "crypto-js/md5.js";
 import { cacheAirborneRequest } from "../function/airborne.mjs";
 import database from "../function/database.mjs";
-import fixHeaders from "../function/fixHeaders.mjs";
 import setENV from "../function/setENV.mjs";
 /***************** Processing *****************/
 export async function Request($request, KV) {
@@ -118,10 +117,11 @@ export async function Request($request, KV) {
 						case "/bilibili.app.interface.v1.Search/DefaultWords":
 							$response = {
 								status: 200,
-								headers: fixHeaders($request.headers, {
+								headers: {
 									"Content-Type": "application/grpc",
 									"Content-Length": "5",
-								}),
+									"grpc-status": "0",
+								},
 								body: gRPC.encode(new Uint8Array()),
 							};
 							Console.info("✅ 搜索默认关键词已返回空 gRPC 响应");

@@ -67,7 +67,7 @@ jobs:
         run: |
           node --input-type=module <<'JS'
           import { readFile, writeFile } from "node:fs/promises";
-          const names = ["request.dev.bundle.js","response.dev.bundle.js","BiliBili.ADBlock.dev.sgmodule","BiliBili.ADBlock.dev.plugin","BiliBili.ADBlock.dev.snippet","BiliBili.ADBlock.dev.stoverride","config.dev.bundle.js","BiliBili.ADBlock.dev.boxjs.json"];
+          const names = ["request.dev.bundle.js","response.dev.bundle.js","BiliBili.ADBlock.dev.sgmodule","BiliBili.ADBlock.dev.plugin","BiliBili.ADBlock.dev.snippet","BiliBili.ADBlock.dev.stoverride","BiliBili.ADBlock.dev.srmodule","BiliBili.ADBlock.dev.yaml","config.dev.bundle.js","BiliBili.ADBlock.dev.boxjs.json"];
           const files = Object.fromEntries(await Promise.all(names.map(async name => [name, { content: await readFile(`dist/${name}`, "utf8") }])));
           await writeFile("gist-update.json", JSON.stringify({ description: "📺 BiliBili: 🛡️ ADBlock β", files }));
           JS

@@ -13,6 +13,10 @@ export const output = {
 	},
 	customItems: [
 		{
+			path: "./dist/BiliBili.ADBlock.srmodule",
+			template: "./template/shadowrocket.handlebars",
+		},
+		{
 			path: "./dist/BiliBili.ADBlock.stoverride",
 			template: "./template/stash.handlebars",
 		},

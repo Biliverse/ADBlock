@@ -21,8 +21,8 @@
 ^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/Flash url reject-dict
 ^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/ListFlash url reject-dict
 ^https?:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? url reject-dict
-# 📺 BiliBili.ADBlock.request.grpc
-^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ url script-request-header https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js
+# 📺 BiliBili.ADBlock.DefaultWords
+^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$ url echo-response application/grpc\r\ngrpc-status: 0 echo-response https://raw.githubusercontent.com/Biliverse/ADBlock/v{{@package 'version'}}/src/assets/empty.grpc
 # 📺 BiliBili.ADBlock.request.json
 ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index\? url script-request-header https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js
 ^https?:\/\/(cm\.bilibili\.com\/cm\/api\/(conversion\/mobile\/v2|fees\/wise)|adtrack\.qianwen\.com\/v3\/ad\/(show\/)?bilibili|tkio-redirect\.solar-engine\.com\/receive\/turl\/) url script-request-header https://github.com/Biliverse/ADBlock/releases/download/v{{@package 'version'}}/request.bundle.js

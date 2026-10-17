@@ -7,7 +7,9 @@
 
 AIRelate 使用共享 `Module` 的 `data.oneofKind` 与 `data.relates.cards`，卡片直接以 `RelateCard` 结构判定广告。未发生删除时保留原响应字节；发生删除时保留正常数据和未知字段。旧 View 广告标签使用 `TabOtype.CmURI`，广告消息使用真实 `Any` 类型，`VideoGuide` 按整条消息删除。正式依赖为 `@biliverse/protobuf ^1.1.0`。
 
-`fixHeaders` 为手机版、HD 版与海外版在 `x-bili-moss-engine-type: 1` 时补齐缺失的 `grpc-status: 0`，蓝版同样补齐缺失状态；国际版移除成功状态，已有非零状态保持原值。搜索默认词的本地空响应复用该函数。
+`fixHeaders` 为手机版、HD 版与海外版在 `x-bili-moss-engine-type: 1` 时补齐缺失的 `grpc-status: 0`，蓝版同样补齐缺失状态；国际版移除成功状态，已有非零状态保持原值。搜索默认词的本地空响应固定返回 HTTP 200、`Content-Type: application/grpc`、`grpc-status: 0` 和五字节空帧。
+
+Surge、Shadowrocket、Loon、Stash、Quantumult X 和 Egern 的正式版与开发版均使用原生 Mock 返回搜索默认词空响应。QX 直接 echo 仓库中的五字节二进制资源，正式版固定到对应版本 tag，开发版固定到 dev 分支。脚本与服务端的 DefaultWords 路径返回同一固定响应。
 
 ## 设置面板
 

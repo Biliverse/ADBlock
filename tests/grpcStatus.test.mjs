@@ -103,8 +103,7 @@ test("DefaultWords returns the complete empty response for each client and Moss 
 				assert.equal($response.headers["Content-Type"], "application/grpc");
 				assert.equal($response.headers["Content-Length"], "5");
 				assert.deepEqual([...$response.body], [0, 0, 0, 0, 0]);
-				const requiresStatus = client === "bili-blue" || (["bili-universal", "bili-hd2", "bili-overseas"].includes(client) && moss === "1");
-				assert.equal($response.headers["grpc-status"], requiresStatus ? "0" : undefined);
+				assert.equal($response.headers["grpc-status"], "0");
 			}
 		}
 	}

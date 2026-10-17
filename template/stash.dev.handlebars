@@ -40,17 +40,18 @@ http:
     - ^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/Flash - reject-dict
     - ^https?:\/\/manga\.bilibili\.com\/twirp\/comic\.v\d\.Comic\/ListFlash - reject-dict
     - ^https?:\/\/api\.live\.bilibili\.com\/xlive\/e-commerce-interface\/v1\/ecommerce-user\/get_shopping_info\? - reject-dict
+  mock:
+    - match: ^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$
+      base64: "AAAAAAA="
+      status-code: 200
+      headers:
+        Content-Type: application/grpc
+        grpc-status: "0"
   script:
     - match: ^https:\/\/(?:biliverse\.github\.io|app\.bilibili\.com)\/api\/ADBlock(?:\?.*)?$
       name: PreferencePanes.Config.ADBlock
       type: request
       require-body: false
-    - match: ^https?:\/\/(grpc\.biliapi\.net|app\.biliapi\.net|app\.bilibili\.com|app\.biliapi\.com)\/bilibili\.app\.interface\.v1\.Search\/DefaultWords$
-      name: 📺 BiliBili.ADBlock.request.grpc
-      type: request
-      require-body: false
-      binary-mode: true
-      argument:
     - match: ^https?:\/\/app\.bili(bili\.com|api\.net)\/x\/v2\/feed\/index\?
       name: 📺 BiliBili.ADBlock.request.json
       type: request
@@ -140,9 +141,6 @@ http:
 script-providers:
   PreferencePanes.Config.ADBlock:
     url: https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/config.dev.bundle.js
-    interval: 86400
-  📺 BiliBili.ADBlock.request.grpc:
-    url: https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js
     interval: 86400
   📺 BiliBili.ADBlock.request.json:
     url: https://gist.githubusercontent.com/VirgilClyne/0b0c5ac2b8977d5461d4b3276d120896/raw/request.dev.bundle.js
