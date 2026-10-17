@@ -7,6 +7,8 @@
 
 AIRelate 使用共享 `Module` 的 `data.oneofKind` 与 `data.relates.cards`，卡片直接以 `RelateCard` 结构判定广告。未发生删除时保留原响应字节；发生删除时保留正常数据和未知字段。旧 View 广告标签使用 `TabOtype.CmURI`，广告消息使用真实 `Any` 类型，`VideoGuide` 按整条消息删除。正式依赖为 `@biliverse/protobuf ^1.1.0`。
 
+`fixHeaders` 为手机版、HD 版与海外版在 `x-bili-moss-engine-type: 1` 时补齐缺失的 `grpc-status: 0`，蓝版同样补齐缺失状态；国际版移除成功状态，已有非零状态保持原值。搜索默认词的本地空响应复用该函数。
+
 ## 设置面板
 
 接入模板只将版本对应的 BoxJS JSON Mock 到 `/api/ADBlock`。dev 的 JSON、纯配置响应和订阅与业务脚本一次性发布到同一个 Gist；正式版 JSON 固定到对应 Release tag。通用设置前端与固定存储 API 由 Enhanced 唯一安装，ADBlock 不携带 PreferencePanes `web.js`、`api.js` 或任何 `/settings/**` 规则。

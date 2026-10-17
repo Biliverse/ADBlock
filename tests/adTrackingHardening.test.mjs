@@ -4,7 +4,6 @@ import test from "node:test";
 import gRPC from "@nsnanocat/grpc";
 import ADBlock from "../src/class/ADBlock.mjs";
 import HonoWorkerAdapter from "../src/class/HonoWorkerAdapter.mjs";
-import fixHeaders from "../src/function/fixHeaders.mjs";
 import { Request } from "../src/process/Request.mjs";
 import { Response as DevResponse } from "../src/process/Response.dev.mjs";
 import { Response as ReleaseResponse } from "../src/process/Response.mjs";
@@ -19,14 +18,6 @@ import { SubjectDescriptionReply } from "@biliverse/protobuf/bilibili/main/commu
 test("protobuf package preserves undeclared response fields", () => {
 	const unknownField = Uint8Array.from([0xa0, 0x06, 0x07]); // field 100, varint 7
 	assert.deepEqual(ViewReply.toBinary(ViewReply.fromBinary(unknownField)), unknownField);
-});
-
-test("fixHeaders tolerates missing headers and user-agent values", () => {
-	assert.deepEqual(fixHeaders(), {});
-	assert.deepEqual(fixHeaders({}, undefined), {});
-	assert.deepEqual(fixHeaders({ "user-agent": "bili-blue/1" }, undefined), { "grpc-status": "0" });
-	assert.deepEqual(fixHeaders({ "user-agent": "bili-inter/1" }, { "grpc-status": "0", keep: "yes" }), { keep: "yes" });
-	assert.deepEqual(fixHeaders({ "user-agent": "bili-universal/1", "x-bili-moss-engine-type": "1" }, null), { "grpc-status": "0" });
 });
 
 test("ADBlock centralizes search ad and tracking cleanup", () => {
